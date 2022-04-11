@@ -974,45 +974,26 @@ m -> minutes; h -> hours; d -> days; w -> weeks; M -> months
 
 ```json
 {
-  "e": "kline",
-  // Event type
-  "E": 123456789,
-  // Event time
-  "s": "BTCUSDT",
-  // contract name  
-  "ct": "perpertual",
-  // contract type
+  "e": "kline", // Event type
+  "E": 123456789, // Event time
+  "s": "BTCUSDT", // contract name  
+  "ct": "perpertual", // contract type
   "k": {
-    "t": 123400000,
-    // Kline start time
-    "T": 123460000,
-    // Kline close time   
-    "i": "1m",
-    // Interval
-    "f": 100,
-    // First trade ID
-    "L": 200,
-    // Last trade ID
-    "o": "0.0010",
-    // Open price
-    "c": "0.0020",
-    // Close price
-    "h": "0.0025",
-    // High price
-    "l": "0.0015",
-    // Low price
-    "v": "1000",
-    // Base asset volume
-    "n": 100,
-    // Number of trades
-    "x": false,
-    // Is this kline closed?
-    "q": "1.0000",
-    // Quote asset volume
-    "V": "500",
-    // Taker buy base asset volume
-    "Q": "0.500"
-    // Taker buy quote asset volume
+    "t": 123400000, // Kline start time
+    "T": 123460000, // Kline close time   
+    "i": "1m", // Interval
+    "f": 100, // First trade ID
+    "L": 200, // Last trade ID
+    "o": "0.0010", // Open price
+    "c": "0.0020", // Close price
+    "h": "0.0025", // High price
+    "l": "0.0015", // Low price
+    "v": "1000", // Base asset volume
+    "n": 100, // Number of trades
+    "x": false, // Is this kline closed?
+    "q": "1.0000", // Quote asset volume
+    "V": "500", // Taker buy base asset volume
+    "Q": "0.500" // Taker buy quote asset volume
   }
 } 
 ```  
@@ -1029,45 +1010,26 @@ Mark price and funding rate for a single symbol pushed every second.
 
 ```json
    {
-  "e": "kline",
-  // Event type
-  "E": 123456789,
-  // Event time
-  "s": "BTCUSDT",
-  // contract name  
-  "ct": "perpertual",
-  // contract type
+  "e": "kline", // Event type
+  "E": 123456789, // Event time
+  "s": "BTCUSDT", // contract name  
+  "ct": "perpertual", // contract type
   "k": {
-    "t": 123400000,
-    // Kline start time
-    "T": 123460000,
-    // Kline close time   
-    "i": "1m",
-    // Interval
-    "f": 100,
-    // First trade ID
-    "L": 200,
-    // Last trade ID
-    "o": "0.0010",
-    // Open price
-    "c": "0.0020",
-    // Close price
-    "h": "0.0025",
-    // High price
-    "l": "0.0015",
-    // Low price
-    "v": "1000",
-    // Base asset volume
-    "n": 100,
-    // Number of trades
-    "x": false,
-    // Is this kline closed?
-    "q": "1.0000",
-    // Quote asset volume
-    "V": "500",
-    // Taker buy base asset volume
-    "Q": "0.500"
-    // Taker buy quote asset volume
+    "t": 123400000, // Kline start time
+    "T": 123460000, // Kline close time   
+    "i": "1m", // Interval
+    "f": 100, // First trade ID
+    "L": 200, // Last trade ID
+    "o": "0.0010", // Open price
+    "c": "0.0020", // Close price
+    "h": "0.0025", // High price
+    "l": "0.0015", // Low price
+    "v": "1000", // Base asset volume
+    "n": 100, // Number of trades
+    "x": false, // Is this kline closed?
+    "q": "1.0000", // Quote asset volume
+    "V": "500", // Taker buy base asset volume
+    "Q": "0.500" // Taker buy quote asset volume
   }
 }
 ```  
@@ -1082,45 +1044,26 @@ Mark price and funding rate for a single symbol pushed every second.
 
 ```json
 {
-  "e": "kline",
-  // Event type
-  "E": 123456789,
-  // Event time
-  "s": "BTCUSDT",
-  // contract name  
-  "ct": "perpertual",
-  // contract type
+  "e": "kline", // Event type
+  "E": 123456789, // Event time
+  "s": "BTCUSDT", // contract name  
+  "ct": "perpertual", // contract type
   "k": {
-    "t": 123400000,
-    // Kline start time
-    "T": 123460000,
-    // Kline close time   
-    "i": "1m",
-    // Interval
-    "f": 100,
-    // First trade ID
-    "L": 200,
-    // Last trade ID
-    "o": "0.0010",
-    // Open price
-    "c": "0.0020",
-    // Close price
-    "h": "0.0025",
-    // High price
-    "l": "0.0015",
-    // Low price
-    "v": "1000",
-    // Base asset volume
-    "n": 100,
-    // Number of trades
-    "x": false,
-    // Is this kline closed?
-    "q": "1.0000",
-    // Quote asset volume
-    "V": "500",
-    // Taker buy base asset volume
-    "Q": "0.500"
-    // Taker buy quote asset volume
+    "t": 123400000, // Kline start time
+    "T": 123460000, // Kline close time   
+    "i": "1m", // Interval
+    "f": 100, // First trade ID
+    "L": 200, // Last trade ID
+    "o": "0.0010", // Open price
+    "c": "0.0020", // Close price
+    "h": "0.0025", // High price
+    "l": "0.0015", // Low price
+    "v": "1000", // Base asset volume
+    "n": 100, // Number of trades
+    "x": false, // Is this kline closed?
+    "q": "1.0000", // Quote asset volume
+    "V": "500", // Taker buy base asset volume
+    "Q": "0.500" // Taker buy quote asset volume
   }
 }  
 ```  
@@ -1142,36 +1085,23 @@ level include:
 
 ```json
 {
-  "e": "depthUpdate",
-  // Event type
-  "E": 123456789,
-  // Event time
-  "T": 123456788,
-  // Transaction time 
-  "s": "BTCUSDT",
-  // Symbol
-  "U": 157,
-  // First update ID in event
-  "u": 160,
-  // Final update ID in event
-  "pu": 149,
-  // Final update Id in last stream(ie `u` in last stream)
-  "b": [
-    // Bids to be updated
+  "e": "depthUpdate", // Event type
+  "E": 123456789, // Event time
+  "T": 123456788, // Transaction time 
+  "s": "BTCUSDT", // Symbol
+  "U": 157, // First update ID in event
+  "u": 160, // Final update ID in event
+  "pu": 149, // Final update Id in last stream(ie `u` in last stream)
+  "b": [// Bids to be updated
     [
-      "0.0024",
-      // Price level to be updated
-      "10"
-      // Quantity
+      "0.0024", // Price level to be updated
+      "10" // Quantity
     ]
   ],
-  "a": [
-    // Asks to be updated
+  "a": [// Asks to be updated
     [
-      "0.0026",
-      // Price level to be updated
-      "100"
-      // Quantity
+      "0.0026", // Price level to be updated
+      "100" // Quantity
     ]
   ]
 }  
@@ -1187,24 +1117,15 @@ level include:
 
 ```json
 {
-  "e": "trade",
-  // Event type
-  "E": 123456789,
-  // Event time
-  "T": 123456788,
-  // Transaction time
-  "s": "BTCUSDT",
-  // Symbol
-  "t": 157,
-  // update id
-  "p": "60221.0",
-  // price
-  "q": "0.01",
-  // quantity 
-  "X": "Market",
-  //Trade type
-  "m": true
-  // is buyer maker 
+  "e": "trade", // Event type
+  "E": 123456789, // Event time
+  "T": 123456788, // Transaction time
+  "s": "BTCUSDT", // Symbol
+  "t": 157, // update id
+  "p": "60221.0", // price
+  "q": "0.01", // quantity 
+  "X": "Market", //Trade type
+  "m": true // is buyer maker 
 }  
 ```
 
