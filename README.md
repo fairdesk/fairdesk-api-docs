@@ -18,8 +18,13 @@
             * [Order Status](#orderstatus)
             * [Time in Force](#timeinforce)
             * [Price Trigger Type](#pricetriggertype)
-    * [REST API List](#restapilist)
-        * [Query Product Information](#queryproductinfo)
+    * [Public REST API List](#restpublicapilist)
+        * [Order Book](#restpublicorderbook)
+        * [Recent Trades](#restpublicrecenttrade)
+        * [History Trade](#restpublichistorytrade)
+        * [Ticker](#restpublicticker)
+        * [Kline](#restpublickline)
+    * [User REST API List](#restuserapilist)
         * [Query Current Future Positions](#querycurrentpositions)
         * [List Open Orders](#queryopenorders)
         * [Place Order](#placeorder)
@@ -30,7 +35,7 @@
         * [Adjust leverage](#adjustleverage)
         * [Query Transaction History](#querytransactions)
         * [Assign Balances for Isolated Margin](#adjustmargin)
-        * [Query Recent Trades](#querytrades)
+        * [Query Trade history](#querytrades)
         * [Query Order History](#orderhistory)
 * [Websocket Stream API](#websocket-stream)
     * [Live Subscribing/Unsubscribing to streams](#stream)
@@ -59,9 +64,10 @@
 ## General API Information
 
 * Fairdesk provides HTTP Rest API for client to operate Orders, all endpoints return a JSON object.
-* The default Rest API base endpoint is: **https://api.fairdesk.com**.
 * Fairdesk provides WebSocket API for client to receive market data, order and position updates.
+* The default Rest API base endpoint is: **https://api.fairdesk.com**.
 * The WebSocket API url is: **wss://www.fairdesk.com/**.
+* The Testnet endpoints are **https://testnet-api.fairdesk.com** and **wss//testnet.fairdesk.com** 
 
 <a name="restapi"/>
 
@@ -245,13 +251,15 @@ Every PRIVATE HTTP Request must have the following Headers:
 | MARK_PRICE | trigger by mark price |
 | LAST_PRICE | trigger by last price |
 
-<a name="restapilist"/>
 
-## REST Contract Group API List
+<a name="restpublicapilist"/>
+
+## Public REST API List
+ 
 
 <a name="queryproductinfo"/>
 
-### Query Product Information
+#### Query Product Information
 
 * Request：
 
@@ -282,10 +290,6 @@ GET /api/v1/public/products/products
       "maxOrderQty": "100.000000",
       "minOrderQty": "0.000000",
       "marketMaxQty": "0.000000",
-      "priceScale": 6,
-      "valueScale": 6,
-      "ratioScale": 8,
-      "defaultLeverage": 20,
       "priceDecimal": 1,
       "amountDecimal": 3,
       "fundingInterval": "Every 8 hours",
@@ -294,8 +298,7 @@ GET /api/v1/public/products/products
       "marketPriceDiffRate": 0.1,
       "limitPriceDiffRate": 0.1,
       "strategyPriceDiffRate": 0.075,
-      "liquidationFeeRate": 0.01,
-      "status": "TRADING"
+      "liquidationFeeRate": 0.01 
     },
     ...
   ]
@@ -308,7 +311,7 @@ GET /api/v1/public/products/products
 | Field           | Type           | Description                       | Possible values      |
 |-----------------|----------------|-----------------------------------|----------------------|
 | symbolId        | Int            | internal symbol id                |                      |
-| symbol          | String         | internal symbol id                |                      |
+| symbol          | String         | symbol name                       |                      |
 | tickSize        | Decimal        | minimum price incremental size    |                      |
 | stepSize        | Decimal        | minimum quantity incremental size |                      |
 | maxPrice        | Decimal        | Max price                         |                      |
@@ -318,7 +321,244 @@ GET /api/v1/public/products/products
 | defaultLeverage | Int            | default leverage                  |                      |
 | makerFeeRate    | Decimal        | default maker fee rate            |                      |
 | takerFeeRate    | Decimal        | default taker fee rate            |                      |
-| status          | Enum           | TRADING                           | TRADING,SUSPEND,STOP |
+
+
+<a name="restpublicorderbook"/>
+
+### Orderbook
+* Request：
+
+```
+GET /api/v1/public/md/orderbook?symbol=BTCUSDT 
+```
+
+the param symbol are symbol names from products response 
+
+* Example Response
+
+```json
+{
+  "status": 0,
+  "error": "OK",
+  "data": {
+    "symbol": "btcusdt",
+    "bids": [
+      [
+        38794.500000,
+        1.214000
+      ],
+      [
+        38794.000000,
+        0.888000
+      ],
+      ...
+    ],
+    "asks": [
+      [
+        38795.500000,
+        2.224000
+      ],
+      [
+        38996.000000,
+        1.213000
+      ],
+      ...
+    ]
+  }
+}
+```
+
+<a name="restpublicrecenttrade"/>
+
+### Recent Trade Query
+
+* Example Request of a product
+
+```
+GET /api/v1/public/md/trade-recent?symbol=BTCUSDT 
+```
+
+the param symbol are symbol names from products response
+
+* Example Response
+
+```json
+ {
+  "status": 0,
+  "error": "OK",
+  "data": {
+    "symbol": "btcusdt",
+    "timestamp": 1651500774161,
+    "trades": [
+      {
+        "qty": 0.009000,
+        "price": 38821.500000,
+        "timestamp": 1651499396419,
+        "buyMaker": true
+      },
+      ...
+    ]
+  }
+}
+```
+
+* Detail for the Response Field:
+
+| Field                | Type    | Description            |
+|----------------------|---------|------------------------|
+| qty                  | Decimal | trade quantity         |
+| price                | Decimal | trade price            |
+| timestamp            | Long    | transaction timestamp  |
+| buyMarker            | Boolean | is buyer the maker     |
+
+
+<a name="restpublichistorytrade"/>
+
+### Trade History Query
+
+rate limit weight: 10
+
+* Example Request of a product
+```
+GET /api/v1/public/md/trade-history?symbol=BTCUSDT&from=1651382628000&limit=100 
+```
+
+* Request param
+
+| Field    | Type   | Description                     | Default values |
+|----------|--------|---------------------------------|----------------|
+| symbol   | String | symbol name                     |                |
+| from     | Long   | from transaction time in millis |                |
+| limit    | Int    | date limit, max 1000            | 500            |
+
+The response format is the same with trade-recent
+
+* Detail for the Response Field:
+
+| Field                | Type    | Description            |
+|----------------------|---------|------------------------|
+| qty                  | Decimal | trade quantity         |
+| price                | Decimal | trade price            |
+| timestamp            | Long    | transaction timestamp  |
+| buyMarker            | Boolean | is buyer the maker     |
+
+<a name="restpublicticker"/>
+
+### 24h Ticker
+* Request：
+
+```
+GET /api/v1/public/md/ticker24h?symbol=BTCUSDT 
+```
+
+the param symbol are symbol names from products response
+
+* Example Response
+
+```json
+ {
+  "status": 0,
+  "error": "OK",
+  "data": {
+    "symbol": "btcusdt",
+    "timestamp": 1651499766642,
+    "open": 37932.500000,
+    "high": 39118.000000,
+    "low": 37719.000000,
+    "close": 38928.000000,
+    "indexPrice": 38922.2,
+    "markPrice": 38923.2,
+    "openInterest": 40.734286,
+    "fundingRate": 0.00010000,
+    "predicateFundingRate": 0.000100,
+    "baseVolume": 144.491000,
+    "quoteVolume": 5566361.331
+  }
+}
+```
+
+* Detail for the Response Field:
+
+| Field                | Type    | Description                          | Possible values |
+|----------------------|---------|--------------------------------------|-----------------|
+| symbol               | String  | symbol name                          |                 |
+| open                 | Decimal | open price                           |                 |
+| high                 | Decimal | high price                           |                 |
+| low                  | Decimal | low price                            |                 |
+| close                | Decimal | close price                          |                 |
+| indexPrice           | Decimal | index price                          |                 |
+| markPrice            | Decimal | mark price                           |                 |
+| fundingRate          | Decimal | last funding rate                    |                 |
+| predicateFundingRate | Decimal | predicate funding rate               |                 |
+| baseVolume           | Decimal | 24h volume for base ccy like BTC     |                 |
+| quoteVolume          | Decimal | 24h volume for quote ccy like USDT   |                 |
+
+
+<a name="restpublickline"/>
+
+### Kline query
+
+rate limit weight: 10
+
+* Example Request：
+
+```
+GET /api/v1/public/md/kline?symbol=BTCUSDT&interval=5m&from=1651382628000&to=1651469028000&limit=100
+```
+
+* Request param
+
+| Field    | Type   | Description          | Default values |
+|----------|--------|----------------------|----------------|
+| symbol   | String | symbol name          |                |
+| interval | ENUM   | interval name        | 5m             |
+| from     | Long   | start milliseconds   |                |
+| to       | Long   | end milliseconds     |                |
+| limit    | Int    | date limit, max 1000 | 500            |
+
+* Example Response
+* 
+```json
+{
+  "status": 0,
+  "error": "OK",
+  "data": [
+    {
+      "openTime": 1651382700000,
+      "intervalId": "5m",
+      "closeTime": 1651382999999,
+      "open": 38076.000000,
+      "close": 38095.000000,
+      "high": 38098.000000,
+      "low": 38056.500000,
+      "volume": 0.067000,
+      "quoteVolume": 2551.822500,
+      "closed": true,
+      "numTrades": 15
+    },
+    ...
+  ]
+}
+```
+
+* Detail for the Response Field:
+
+| Field       | Type    | Description                   |  
+|-------------|---------|-------------------------------|
+| openTime    | Long    | interval start time in millis |
+| closeTime   | Long    | interval start time in millis |
+| interval    | Enum    | kline interval                |           
+| open        | Decimal | open price                    |
+| high        | Decimal | high price                    |
+| low         | Decimal | low price                     |
+| close       | Decimal | close price                   |
+| closed      | Boolean | is the kline closed           |
+| numTrades   | Int     | number of Trades              |
+| baseVolume  | Decimal | 24h volume for base ccy       |
+| quoteVolume | Decimal | 24h volume for quote ccy      |
+
+
+<a name="restuserapilist"/>
 
 <a name="querycurrentpositions"/>
 
@@ -372,7 +612,7 @@ GET /api/v1/private/account/positions
 * Request
 
 ```
-GET /api/v1/private/trade/open-orders
+GET /api/v1/private/account/open-orders
 ```  
 
 * Example Response
@@ -525,7 +765,7 @@ POST /api/v1/private/trade/place-order
 * Request
 
 ```
-POST /api/v1/private/trade/cancel-order
+DELETE /api/v1/private/trade/cancel-order
 
 {
   "symbol": "btcusdt",
@@ -705,6 +945,8 @@ PUT /api/v1/private/account/config/adjust-position-margin
 
 ### Query Recent Trades
 
+rate limit weight: 5
+
 * Request：
 
 ```  
@@ -755,6 +997,8 @@ GET /api/v1/private/account/trade-histories?symbol=ETHUSDT&orderId=1212131
 <a name="orderhistory"/>  
 
 ### Query Order History
+
+rate limit weight: 5
 
 * Request：
 
@@ -834,6 +1078,8 @@ some field details:
 <a name="querytransactions"/>  
 
 ### Query Transaction History
+
+rate limit weight: 5
 
 * Request：
 
@@ -974,26 +1220,45 @@ m -> minutes; h -> hours; d -> days; w -> weeks; M -> months
 
 ```json
 {
-  "e": "kline", // Event type
-  "E": 123456789, // Event time
-  "s": "BTCUSDT", // contract name  
-  "ct": "perpertual", // contract type
+  "e": "kline",
+  // Event type
+  "E": 123456789,
+  // Event time
+  "s": "BTCUSDT",
+  // contract name  
+  "ct": "perpertual",
+  // contract type
   "k": {
-    "t": 123400000, // Kline start time
-    "T": 123460000, // Kline close time   
-    "i": "1m", // Interval
-    "f": 100, // First trade ID
-    "L": 200, // Last trade ID
-    "o": "0.0010", // Open price
-    "c": "0.0020", // Close price
-    "h": "0.0025", // High price
-    "l": "0.0015", // Low price
-    "v": "1000", // Base asset volume
-    "n": 100, // Number of trades
-    "x": false, // Is this kline closed?
-    "q": "1.0000", // Quote asset volume
-    "V": "500", // Taker buy base asset volume
-    "Q": "0.500" // Taker buy quote asset volume
+    "t": 123400000,
+    // Kline start time
+    "T": 123460000,
+    // Kline close time   
+    "i": "1m",
+    // Interval
+    "f": 100,
+    // First trade ID
+    "L": 200,
+    // Last trade ID
+    "o": "0.0010",
+    // Open price
+    "c": "0.0020",
+    // Close price
+    "h": "0.0025",
+    // High price
+    "l": "0.0015",
+    // Low price
+    "v": "1000",
+    // Base asset volume
+    "n": 100,
+    // Number of trades
+    "x": false,
+    // Is this kline closed?
+    "q": "1.0000",
+    // Quote asset volume
+    "V": "500",
+    // Taker buy base asset volume
+    "Q": "0.500"
+    // Taker buy quote asset volume
   }
 } 
 ```  
@@ -1010,26 +1275,45 @@ Mark price and funding rate for a single symbol pushed every second.
 
 ```json
    {
-  "e": "kline", // Event type
-  "E": 123456789, // Event time
-  "s": "BTCUSDT", // contract name  
-  "ct": "perpertual", // contract type
+  "e": "kline",
+  // Event type
+  "E": 123456789,
+  // Event time
+  "s": "BTCUSDT",
+  // contract name  
+  "ct": "perpertual",
+  // contract type
   "k": {
-    "t": 123400000, // Kline start time
-    "T": 123460000, // Kline close time   
-    "i": "1m", // Interval
-    "f": 100, // First trade ID
-    "L": 200, // Last trade ID
-    "o": "0.0010", // Open price
-    "c": "0.0020", // Close price
-    "h": "0.0025", // High price
-    "l": "0.0015", // Low price
-    "v": "1000", // Base asset volume
-    "n": 100, // Number of trades
-    "x": false, // Is this kline closed?
-    "q": "1.0000", // Quote asset volume
-    "V": "500", // Taker buy base asset volume
-    "Q": "0.500" // Taker buy quote asset volume
+    "t": 123400000,
+    // Kline start time
+    "T": 123460000,
+    // Kline close time   
+    "i": "1m",
+    // Interval
+    "f": 100,
+    // First trade ID
+    "L": 200,
+    // Last trade ID
+    "o": "0.0010",
+    // Open price
+    "c": "0.0020",
+    // Close price
+    "h": "0.0025",
+    // High price
+    "l": "0.0015",
+    // Low price
+    "v": "1000",
+    // Base asset volume
+    "n": 100,
+    // Number of trades
+    "x": false,
+    // Is this kline closed?
+    "q": "1.0000",
+    // Quote asset volume
+    "V": "500",
+    // Taker buy base asset volume
+    "Q": "0.500"
+    // Taker buy quote asset volume
   }
 }
 ```  
@@ -1044,26 +1328,45 @@ Mark price and funding rate for a single symbol pushed every second.
 
 ```json
 {
-  "e": "kline", // Event type
-  "E": 123456789, // Event time
-  "s": "BTCUSDT", // contract name  
-  "ct": "perpertual", // contract type
+  "e": "kline",
+  // Event type
+  "E": 123456789,
+  // Event time
+  "s": "BTCUSDT",
+  // contract name  
+  "ct": "perpertual",
+  // contract type
   "k": {
-    "t": 123400000, // Kline start time
-    "T": 123460000, // Kline close time   
-    "i": "1m", // Interval
-    "f": 100, // First trade ID
-    "L": 200, // Last trade ID
-    "o": "0.0010", // Open price
-    "c": "0.0020", // Close price
-    "h": "0.0025", // High price
-    "l": "0.0015", // Low price
-    "v": "1000", // Base asset volume
-    "n": 100, // Number of trades
-    "x": false, // Is this kline closed?
-    "q": "1.0000", // Quote asset volume
-    "V": "500", // Taker buy base asset volume
-    "Q": "0.500" // Taker buy quote asset volume
+    "t": 123400000,
+    // Kline start time
+    "T": 123460000,
+    // Kline close time   
+    "i": "1m",
+    // Interval
+    "f": 100,
+    // First trade ID
+    "L": 200,
+    // Last trade ID
+    "o": "0.0010",
+    // Open price
+    "c": "0.0020",
+    // Close price
+    "h": "0.0025",
+    // High price
+    "l": "0.0015",
+    // Low price
+    "v": "1000",
+    // Base asset volume
+    "n": 100,
+    // Number of trades
+    "x": false,
+    // Is this kline closed?
+    "q": "1.0000",
+    // Quote asset volume
+    "V": "500",
+    // Taker buy base asset volume
+    "Q": "0.500"
+    // Taker buy quote asset volume
   }
 }  
 ```  
@@ -1085,23 +1388,36 @@ level include:
 
 ```json
 {
-  "e": "depthUpdate", // Event type
-  "E": 123456789, // Event time
-  "T": 123456788, // Transaction time 
-  "s": "BTCUSDT", // Symbol
-  "U": 157, // First update ID in event
-  "u": 160, // Final update ID in event
-  "pu": 149, // Final update Id in last stream(ie `u` in last stream)
-  "b": [// Bids to be updated
+  "e": "depthUpdate",
+  // Event type
+  "E": 123456789,
+  // Event time
+  "T": 123456788,
+  // Transaction time 
+  "s": "BTCUSDT",
+  // Symbol
+  "U": 157,
+  // First update ID in event
+  "u": 160,
+  // Final update ID in event
+  "pu": 149,
+  // Final update Id in last stream(ie `u` in last stream)
+  "b": [
+    // Bids to be updated
     [
-      "0.0024", // Price level to be updated
-      "10" // Quantity
+      "0.0024",
+      // Price level to be updated
+      "10"
+      // Quantity
     ]
   ],
-  "a": [// Asks to be updated
+  "a": [
+    // Asks to be updated
     [
-      "0.0026", // Price level to be updated
-      "100" // Quantity
+      "0.0026",
+      // Price level to be updated
+      "100"
+      // Quantity
     ]
   ]
 }  
@@ -1117,15 +1433,24 @@ level include:
 
 ```json
 {
-  "e": "trade", // Event type
-  "E": 123456789, // Event time
-  "T": 123456788, // Transaction time
-  "s": "BTCUSDT", // Symbol
-  "t": 157, // update id
-  "p": "60221.0", // price
-  "q": "0.01", // quantity 
-  "X": "Market", //Trade type
-  "m": true // is buyer maker 
+  "e": "trade",
+  // Event type
+  "E": 123456789,
+  // Event time
+  "T": 123456788,
+  // Transaction time
+  "s": "BTCUSDT",
+  // Symbol
+  "t": 157,
+  // update id
+  "p": "60221.0",
+  // price
+  "q": "0.01",
+  // quantity 
+  "X": "Market",
+  //Trade type
+  "m": true
+  // is buyer maker 
 }  
 ```
 
