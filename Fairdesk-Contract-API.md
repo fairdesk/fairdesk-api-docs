@@ -19,6 +19,9 @@
       * [Time in Force](#timeinforce)
       * [Price Trigger Type](#pricetriggertype)
   * [Public REST API List](#restpublicapilist)
+    * [product info](#queryproductinfo)
+    * [contract detail](#restpubliccontracts)
+    * [contract brief](#restpubliccontractbrief)
     * [Order Book](#restpublicorderbook)
     * [Recent Trades](#restpublicrecenttrade)
     * [History Trade](#restpublichistorytrade)
@@ -267,7 +270,7 @@ Every PRIVATE HTTP Request must have the following Headers:
 * Request：
 
 ```
-GET /api/v1/public/products/products 
+GET /api/v1/public/products 
 ```
 
 * Example Response:
@@ -324,6 +327,112 @@ GET /api/v1/public/products/products
 | defaultLeverage | Int            | default leverage                  |                      |
 | makerFeeRate    | Decimal        | default maker fee rate            |                      |
 | takerFeeRate    | Decimal        | default taker fee rate            |                      |
+
+
+<a name="restpubliccontracts"/>
+
+### Contract detail info 
+* Request：
+```
+GET /api/v1/public/md/contracts
+```
+
+* Example Response 
+
+```json
+{
+  "success": true,
+  "result": [
+   {
+    "product_type": "perpetual",
+    "contract_type": "Vanilla",
+    "contract_price_currency": "USDT",
+    "contract_price": 20699.500000,
+    "ticker_id": "BTC-PERPUSDT",
+    "base_currency": "BTC",
+    "target_currency": "USDT",
+    "quote_currency": "USDT",
+    "last_price": 20699.500000,
+    "base_volume": 35692.691000,
+    "target_volume": 727005598.469,
+    "quote_volume": 727005598.469,
+    "USD_volume": 727005598.469,
+    "open_interest": 10995.844245,
+    "open_interest_usd": 223968556.616,
+    "bid": 20699.000000,
+    "ask": 20700.000000,
+    "high": 20890.000000,
+    "low": 19782.000000,
+    "index_price": 20697.5,
+    "index_name": "BTC/USDT",
+    "index_currency": "BTC",
+    "start_timestamp": null,
+    "end_timestamp": null,
+    "funding_rate": 0.00010000,
+    "next_funding_rate": 0.000100,
+    "next_funding_rate_timestamp": 1656000000000,
+    "maker_fee": 0.00020000,
+    "taker_fee": 0.00040000
+  }
+   ...],
+..
+```
+
+* Detail for the Response Field:
+
+| Field                       | Type    | Description                   |
+|-----------------------------|---------|-------------------------------|
+| product_type                | String  | product type                  |
+| contract_type               | String  | contract type                 |
+| contract_price_currency     | String  | currency used for price       |
+| contract_price / last_price | decimal | last price                    |
+| ticker_id                   | String  | ticker name                   |
+| base_currency               | String  | base ccy                      |
+| quote_currency              | String  | quote ccy                     |
+| base_volume                 | decimal | last 24 trade vol in base ccy |
+| target_volume/ quote_volume | decimal | last 24 trade vol in base ccy |
+| usd volume                  | decimal | last 24 trade vol in USD      |
+| open_interest               | decimal | open interest in quote ccy    |
+| open_interest_usd           | decimal | open interest in USD          |
+| bid                         | decimal | best bid price                |
+| ask                         | decimal | best ask price                |
+| high                        | decimal | 24h high                      |
+| low                         | decimal | 24h low                       |
+| index_price                 | decimal | underlying index price        |
+| index_name                  | String  | underlying index pair name    |
+| index_currency              | String  | base ccy of the index price   |
+| funding_rate                | decimal | last funding rate             |
+| next_funding_rate           | decimal | predicated funding rate       |
+| next_funding_rate_timestamp | long    | next funding timestamp        |
+| maker_fee                   | decimal | maker fee                     |
+| taker_fee                   | decimal | taker fee                     |
+
+
+
+
+<a name="restpubliccontractbrief"/>
+
+### Contract brief 
+* Request：
+```
+GET /api/v1/public/md/contract_specs
+```
+
+* Example Response
+
+```json
+{
+  "success": true,
+  "result": [
+   {
+     "ticker_id": "SOL-PERPUSDT",
+     "contract_type": "Vanilla",
+     "contract_price_currency": "USDT",
+     "contract_price": 36.610000
+  }
+   ...],
+..
+```
 
 
 <a name="restpublicorderbook"/>
