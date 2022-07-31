@@ -13,6 +13,7 @@
   * [Request/Response Field Explained](#fieldexplained)
     * [Common Constants](#commconsts)
       * [Order Side](#orderside)
+      * [Position Mode](#positionmode)
       * [Position Side](#positionside)
       * [Order Type](#ordertype)
       * [Order Status](#orderstatus)
@@ -33,10 +34,12 @@
     * [Place Order](#placeorder)
     * [Cancel Single Order by Order id](#cancelsingleorder)
     * [Cancel All Orders](#cancelallorders)
+    * [Query Account Basic](#queryaccountbasic)
     * [Query Trading Account Balance](#querytradeaccount)
     * [Feature Account Symbol Config](#symbolconfig)
     * [Query leverage](#queryleverage)
     * [Adjust leverage](#adjustleverage)
+    * [Adjust Position Mode](#adjustpositionmode)
     * [Assign Balances for Isolated Margin](#adjustmargin)
     * [Query Trade history](#querytrades)
     * [Query Transaction History](#querytransactions)
@@ -189,14 +192,25 @@ Every PRIVATE HTTP Request must have the following Headers:
 | BUY       | BUY         |
 | SELL      | SELL        |
 
+
+<a name="positionmode"/>
+
+#### Position MODE
+
+| type       | description                                                                       |
+|------------|-----------------------------------------------------------------------------------|
+| MODE_UNI   | ONE-side-mode                                                                     |
+| MODE_HEDGE | HEDGE mode to support both long and short position of same currency and isolation |
+
 <a name="positionside"/>
 
 #### Position Side
 
-| type  | description    |
-|-------|----------------|
-| LONG  | LONG position  |
-| SHORT | SHORT position |
+| type  | description                   |
+|-------|-------------------------------|
+| UNI   | ONE-side-mode                 |
+| LONG  | LONG position in hedge mode   |
+| SHORT | SHORT position in hedge mode  |
 
 <a name="ordertype"/>
 
@@ -764,31 +778,31 @@ GET /api/v1/private/account/open-orders
 
 * Explanation for the Fields
 
-| Field          | Type      | Description                                           | Possible values             |
-|----------------|-----------|-------------------------------------------------------|-----------------------------|
-| symbol         | String    | Which symbol to place order                           |                             | 
-| clientOrderId  | String    | client order id, max length is 40                     |                             |
-| orderId        | Long      | unique order id                                       |                             |
-| status         | Enum      | order execution status                                | NEW,PARTIALLY_FILLED,FILLED |
-| side           | Enum      | Order direction, Buy or Sell                          | BUY, SELL                   | 
-| positionSide   | Enum      | position direction                                    | LONG, SHORT                 | 
-| transactTime   | Long      | last transaction time                                 |
-| isolated       | Boolean   | true for isolated position, false for cross position  | true, false                 | 
-| closePosition  | Boolean   | indicate close position order or not                  | true, false                 | 
-| quantity       | String    | Order quantity                                        |                             |
-| price          | String    | price, required for limit order                       |                             | 
-| type           | Enum      | order type                                            | refer to orderType          | 
-| timeInForce    | Enum      | Time in force.                                        | GTC, FOK, IOC, POST_ONLY    | 
-| conditional    | Boolean   | indicate a conditional order                          |                             | 
-| triggerType    | Enum      | condition trigger type                                | LAST_PRICE, Mark_PRICE      | 
-| triggerPrice   | String    | Trigger Price                                         |                             |
-| tpTriggerType  | String    | take profit trigger type                              | LAST_PRICE, Mark_PRICE      |
-| tpTriggerPrice | String    | take profit trigger price                             |                             |
-| slTriggerType  | String    | stop loss trigger type                                | LAST_PRICE, Mark_PRICE      |
-| slTriggerPrice | String    | stop loss trigger price                               |                             |
-| origQty        | Decimal   | original order quantity                               |                             |
-| executedQty    | Decimal   | executed quantity                                     |                             |
-| activatePrice  | Decimal   | activated price from the `parent` conditional order   |                             |
+| Field          | Type      | Description                                          | Possible values             |
+|----------------|-----------|------------------------------------------------------|-----------------------------|
+| symbol         | String    | Which symbol to place order                          |                             | 
+| clientOrderId  | String    | client order id, max length is 40                    |                             |
+| orderId        | Long      | unique order id                                      |                             |
+| status         | Enum      | order execution status                               | NEW,PARTIALLY_FILLED,FILLED |
+| side           | Enum      | Order direction, Buy or Sell                         | BUY, SELL                   | 
+| positionSide   | Enum      | position direction, UNI by default                   | LONG, SHORT, UNI            | 
+| transactTime   | Long      | last transaction time                                |
+| isolated       | Boolean   | true for isolated position, false for cross position | true, false                 | 
+| closePosition  | Boolean   | indicate close position order or not                 | true, false                 | 
+| quantity       | String    | Order quantity                                       |                             |
+| price          | String    | price, required for limit order                      |                             | 
+| type           | Enum      | order type                                           | refer to orderType          | 
+| timeInForce    | Enum      | Time in force.                                       | GTC, FOK, IOC, POST_ONLY    | 
+| conditional    | Boolean   | indicate a conditional order                         |                             | 
+| triggerType    | Enum      | condition trigger type                               | LAST_PRICE, Mark_PRICE      | 
+| triggerPrice   | String    | Trigger Price                                        |                             |
+| tpTriggerType  | String    | take profit trigger type                             | LAST_PRICE, Mark_PRICE      |
+| tpTriggerPrice | String    | take profit trigger price                            |                             |
+| slTriggerType  | String    | stop loss trigger type                               | LAST_PRICE, Mark_PRICE      |
+| slTriggerPrice | String    | stop loss trigger price                              |                             |
+| origQty        | Decimal   | original order quantity                              |                             |
+| executedQty    | Decimal   | executed quantity                                    |                             |
+| activatePrice  | Decimal   | activated price from the `parent` conditional order  |                             |
 
 <a name="placeorder"/>
 
@@ -815,18 +829,19 @@ POST /api/v1/private/trade/place-order
 
 * Filed details
 
-| Field          | Type    | Required | Description                                          |  Possible values         |
+| Field          | Type    | Required | Description                                          | Possible values          |
 |----------------|---------|----------|------------------------------------------------------|--------------------------|
 | symbol         | String  | Y        | symbol to place order                                |                          | 
 | clientOrderId  | String  | N        | client order id, max length is 40                    |                          |
 | side           | Enum    | Y        | Order direction, Buy or Sell                         | BUY, SELL                | 
-| positionSide   | Enum    | Y        | position direction                                   | LONG, SHORT              | 
+| positionSide   | Enum    | N        | position direction, UNI by default                   | LONG, SHORT, UNI         | 
 | isolated       | Boolean | Y        | true for isolated position, false for cross position | true, false              | 
 | closePosition  | Boolean | N        | indicate close position order or not                 | true, false              | 
 | quantity       | String  | Y        | Order quantity                                       |                          |
 | price          | String  | depends  | price, required for limit order                      |                          | 
 | type           | Enum    | -        | order type                                           | refer to orderType       | 
 | timeInForce    | Enum    | -        | Time in force.                                       | GTC, FOK, IOC, POST_ONLY | 
+| reduceOnly     | Boolean | N        | Useful only in one-way position mode                 | true, false              | 
 | conditional    | Boolean | -        | indicate a conditional order                         |                          | 
 | triggerType    | Enum    | -        | trigger type                                         | LAST_PRICE, Mark_PRICE   | 
 | triggerPrice   | String  | -        | Trigger Price                                        |                          |
@@ -937,6 +952,32 @@ POST /api/v1/private/trade/cancel-all-order
 }
 ```
 
+
+<a name="queryaccountbasic"/>  
+
+### Query Trading Account base config
+
+* Request
+
+```  
+GET /api/v1/private/account/account?currency=USDT  
+```  
+
+* Response
+
+```json  
+{
+  "status": 0,
+  "error": "OK",
+  "data": {
+    "makerFeeDiscountRate": 1,
+    "takerFeeDiscountRate": 1,
+    "positionMode": "MODE_UNI"
+  }
+}
+```
+
+
 <a name="querytradeaccount"/>  
 
 ### Query Trading Account Balance
@@ -1007,7 +1048,7 @@ GET /api/v1/private/account/symbol-config
 
 <a name="queryleverage"/>
 
-### Adjust leverage
+### QUERY leverage
 
 * Request
 
@@ -1066,6 +1107,39 @@ PUT  /api/v1/private/account/config/adjust-leverage
   }
 }  
 ```  
+
+<a name="adjustpositionmode"/>
+
+### Switch Position Mode
+
+* Request
+
+```  
+PUT  /api/v1/private/account/config/switch-position-mode  
+  
+{
+  "positionMode": "MODE_HEDGE"
+}  
+```  
+
+| Field           | Type     | Description    | Possible Values     |  
+|-----------------|----------|----------------|---------------------|
+| positionMode    | Enum     | position mode  | MODE_HEDGE,MODE_UNI |  
+
+please note that position mode can't be updated with open position or orders
+
+* Response
+
+```json
+ {
+  "status": 0,
+  "error": "OK",
+  "data": {
+    "positionMode": "MODE_HEDGE"
+  }
+}
+```  
+
 
 <a name="adjustmargin"/>  
 

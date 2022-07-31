@@ -1,54 +1,74 @@
 
 ## Core Trading ERROR CODE
 
-| CODE | NAME                                   | DESCRIPTION                                                                      | 
-|------|----------------------------------------|----------------------------------------------------------------------------------|
-| 1000 | NO_SUCH_ACCOUNT                        | no such account.                                                                 |
-| 1002 | ACCOUNT_SETTLED_CURRENCY_NOT_MATCH     | account settled currency do not match.                                           |
-| 1004 | MIN_LEVERAGE_RATIO                     | leverage is too small                                                            |
-| 1005 | MAX_LEVERAGE_RATIO                     | leverage is too large.                                                           |
-| 1006 | NEW_LEVERAGE_EQUAL_OLD                 | leverage is equal old leverage.                                                  |
-| 1007 | MARGIN_NOT_ENOUGH                      | margin not enough.                                                               |
-| 1008 | BALANCE_INSUFFICIENT                   | balance insufficient.                                                            |
-| 1009 | RECHARGE_AMOUNT_ILLEGAL                | the amount of recharge is illegal.                                               |
-| 1010 | BALANCE_CHANGE_AMOUNT_ILLEGAL          | the amount of balance change is illegal.                                         |
-| 1011 | INVALID_MARGIN_CHANGE_AMOUNT           | invalid margin change amount.                                                    |
-| 1012 | ISOLATED_LEVERAGE_REJECT_WITH_POSITION | leverage reduction is not supported in Isolated Margin Mode with open positions. |
-| 1013 | BALANCE_VERSION_NOT_EQUAL              | balance version not equal.                                                       |
-| 2000 | INVALID_SYMBOL_ID                      | invalid symbol id.                                                               |
-| 2004 | DUPLICATED_ASSET_NAME                  | duplicated asset name                                                            |
-| 2005 | DUPLICATED_ASSET_ID                    | duplicated asset id                                                              |
-| 2006 | INVALID_ASSET_ID                       | invalid asset id.                                                                |
-| 4000 | NO_SUCH_ORDER                          | no such order.                                                                   |
-| 4001 | PRICE_MISSING                          | price is missing.                                                                |
-| 4002 | QTY_MISSING                            | qty is missing.                                                                  |
-| 4003 | INVALID_QTY                            | qty is invalid.                                                                  |
-| 4004 | INVALID_CURRENCY_ID                    | invalid currency id.                                                             |
-| 4005 | UNABLE_TO_FILL                         | unable to fill.                                                                  |
-| 4006 | ORDER_WOULD_IMMEDIATELY_TRIGGER        | order would immediately trigger.                                                 |
-| 4007 | REDUCE_ONLY_REJECT                     | reduce only reject.                                                              |
-| 4008 | POSITION_NOT_SUFFICIENT                | position is not sufficient.                                                      |
-| 4009 | REDUCE_ONLY_BUY_ERROR                  | reduce only rejected, position more than 0 while buy.                            |
-| 4010 | REDUCE_ONLY_SELL_ERROR                 | reduce only rejected, position less than 0 while sell.                           |
-| 4011 | MAX_OPEN_ORDER_LIMIT                   | max open order limit.                                                            |
-| 4012 | MAX_CONDITIONAL_ORDER_LIMIT            | max conditional order limit.                                                     |
-| 4013 | INVALID_CONDITIONAL_ORDER              | conditional order is invalid.                                                    |
-| 4014 | CLI_ORD_ID_DUPLICATE                   | clientOrderId duplicated.                                                        |
-| 4015 | REDUCE_ONLY_ILLEGAL                    | reduce only reject, order type not supported.                                    |
-| 4020 | CANCEL_REJECTED                        | unknown order sent.                                                              |
-| 4021 | UNKNOWN_UPDATE_TYPE                    | unknown update type.                                                             |
-| 4030 | REDUCE_ONLY_MARGIN_CHECK_FAILED        | reduceOnly order Failed. please check your existing position and open orders.    |
-| 4040 | UNABLE_TO_PARSE_ORDER                  | unable to parse order.                                                           |
-| 4050 | MARKET_ORDER_REJECT                    | the counter party's best price does not meet the PERCENT_PRICE filter limit.     |
-| 4051 | ORDER_PRICE_RANGE_REJECT               | order price not in the proper range.                                             |
-| 4060 | TRIGGER_PRICE_MISSING                  | trigger price is missing.                                                        |
-| 4070 | NO_OPEN_ORDER                          | no open orders to close                                                          |
-| 4071 | ORDER_ID_DUPLICATE                     | order id duplicated.                                                             |
-| 5000 | INVALID_POSITION_SIDE                  | positionSide is not valid.                                                       |
-| 5001 | POSITION_SIDE_NOT_MATCH                | positionSide does not match with userSetting.                                    |
-| 5002 | ADD_ISOLATED_MARGIN_NO_POSITION_REJECT | isolated position quantity should more than 0 when add margin.                   |
-| 5003 | NO_BALANCE_FOR_ADD_MARGIN              | No balance for add position margin.                                              |
-| 5004 | POSITION_MARGIN_CAN_NOT_DECREASE       | Position margin can not decrease.                                                |
+
+
+
+| CODE                                    | NAME       | DESCRIPTION                                                                      | 
+|-----------------------------------------|------------|----------------------------------------------------------------------------------|
+| NO_SUCH_ACCOUNT                         | 1000       | no such account.                                                                 | 
+| DUPLICATE_ACCOUNT                       | 1001       | user account duplicate.                                                          | 
+| ACCOUNT_SETTLED_CURRENCY_NOT_MATCH      | 1002       | account settled currency do not match.                                           | 
+| ACCOUNT_IN_LIQUIDATION                  | 1003       | account in liquidation, not permitted.                                           | 
+| MIN_LEVERAGE_RATIO                      | 1004       | leverage is too small                                                            | 
+| MAX_LEVERAGE_RATIO                      | 1005       | leverage is too large.                                                           | 
+| NEW_LEVERAGE_EQUAL_OLD                  | 1006       | leverage is equal old leverage.                                                  | 
+| MARGIN_NOT_ENOUGH                       | 1007       | margin not enough.                                                               | 
+| BALANCE_INSUFFICIENT                    | 1008       | balance insufficient.                                                            | 
+| RECHARGE_AMOUNT_ILLEGAL                 | 1009       | the amount of recharge is illegal.                                               | 
+| BALANCE_CHANGE_AMOUNT_ILLEGAL           | 1010       | the amount of balance change is illegal.                                         | 
+| INVALID_MARGIN_CHANGE_AMOUNT            | 1011       | invalid margin change amount.                                                    | 
+| ISOLATED_LEVERAGE_REJECT_WITH_POSITION  | 1012       | leverage reduction is not supported in Isolated Margin Mode with open positions. | 
+| BALANCE_VERSION_NOT_EQUAL               | 1013       | balance version not equal.                                                       | 
+| ACCOUNT_CAN_NOT_WITHDRAW                | 1014       | account can not withdraw.                                                        | 
+| ACCOUNT_CAN_NOT_TRADE                   | 1015       | account can not trade.                                                           | 
+| ACCOUNT_CAN_ONLY_REDUCE                 | 1016       | account can only place reduce only order.                                        | 
+| INVALID_FEE_RATE                        | 1017       | invalid fee rate.                                                                | 
+| INVALID_MAKER_FEE_RATE                  | 1018       | invalid maker fee rate.                                                          | 
+| INVALID_TAKER_FEE_RATE                  | 1019       | invalid taker fee rate.                                                          | 
+| UNABLE_UPDATE_POSITION_MODE             | 1020       | unable to update account position mode with open order or positions              | 
+| INVALID_SYMBOL_ID                       | 2000       | invalid symbol id.                                                               | 
+| DUPLICATE_SYMBOL_ID                     | 2001       | duplicate symbol id.                                                             | 
+| DUPLICATE_SYMBOL_NAME                   | 2002       | duplicate symbol name.                                                           | 
+| INVALID_NOTIONAL_LIMIT_COEF             | 2003       | invalid notional limit coef                                                      | 
+| DUPLICATED_ASSET_NAME                   | 2004       | duplicated asset name                                                            | 
+| DUPLICATED_ASSET_ID                     | 2005       | duplicated asset id                                                              | 
+| INVALID_ASSET_ID                        | 2006       | invalid asset id.                                                                | 
+| ASSET_NOT_FOUND                         | 2007       | asset is not found                                                               | 
+| NO_SUCH_ORDER                           | 4000       | no such order.                                                                   | 
+| PRICE_MISSING                           | 4001       | price is missing.                                                                | 
+| QTY_MISSING                             | 4002       | qty is missing.                                                                  | 
+| INVALID_QTY                             | 4003       | qty is invalid.                                                                  | 
+| INVALID_CURRENCY_ID                     | 4004       | invalid currency id.                                                             | 
+| UNABLE_TO_FILL                          | 4005       | unable to fill.                                                                  | 
+| ORDER_WOULD_IMMEDIATELY_TRIGGER         | 4006       | order would immediately trigger.                                                 | 
+| REDUCE_ONLY_REJECT                      | 4007       | reduce only reject.                                                              | 
+| POSITION_NOT_SUFFICIENT                 | 4008       | position is not sufficient.                                                      | 
+| REDUCE_ONLY_BUY_ERROR                   | 4009       | reduce only rejected, position more than 0 while buy.                            | 
+| REDUCE_ONLY_SELL_ERROR                  | 4010       | reduce only rejected, position less than 0 while sell.                           | 
+| MAX_OPEN_ORDER_LIMIT                    | 4011       | max open order limit.                                                            | 
+| MAX_CONDITIONAL_ORDER_LIMIT             | 4012       | max conditional order limit.                                                     | 
+| INVALID_CONDITIONAL_ORDER               | 4013       | conditional order is invalid.                                                    | 
+| CLI_ORD_ID_DUPLICATE                    | 4014       | clientOrderId is existed.                                                        | 
+| REDUCE_ONLY_ILLEGAL                     | 4015       | reduce only reject, order type not supported.                                    | 
+| CANCEL_REJECTED                         | 4020       | unknown order sent.                                                              | 
+| UNKNOWN_UPDATE_TYPE                     | 4021       | unknown update type.                                                             | 
+| REDUCE_ONLY_MARGIN_CHECK_FAILED         | 4030       | reduceOnly order Failed. please check your existing position and open orders.    | 
+| UNABLE_TO_PARSE_ORDER                   | 4040       | unable to parse order.                                                           | 
+| MARKET_ORDER_REJECT                     | 4050       | the counter party's best price does not meet the PERCENT_PRICE filter limit.     | 
+| ORDER_PRICE_RANGE_REJECT                | 4051       | order price not in the proper range.                                             | 
+| TRIGGER_PRICE_MISSING                   | 4060       | trigger price is missing.                                                        | 
+| NO_OPEN_ORDER                           | 4070       | no open orders.                                                                  | 
+| ORDER_ID_DUPLICATE                      | 4071       | order id is existed.                                                             | 
+| ACCOUNT_TEMP_LOCKED                     | 4072       | account temporary locked.                                                        | 
+| INVALID_POSITION_SIDE                   | 5000       | positionSide is not valid.                                                       | 
+| POSITION_SIDE_NOT_MATCH                 | 5001       | positionSide does not match with userSetting.                                    | 
+| ADD_ISOLATED_MARGIN_NO_POSITION_REJECT  | 5002       | isolated position quantity should more than 0 when add margin.                   | 
+| NO_BALANCE_FOR_ADD_MARGIN               | 5003       | No balance for add position margin.                                              | 
+| POSITION_MARGIN_CAN_NOT_DECREASE        | 5004       | Position margin can not decrease.                                                | 
+| INVALID_POSITION_MARGIN_MODE            | 5008       | invalid position margin mode                                                     | 
+| SNAPSHOT_REJECT                         | 5005       | Snapshot will not be executed on master instance.                                | 
+| SNAPSHOT_TRIGGER_TIME_REJECT            | 5006       | Snapshot will not be executed on this trigger time.                              | 
 
 ## Data parse and processing ERROR 
 
