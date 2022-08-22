@@ -27,7 +27,6 @@
     * [Query Account Basic](#queryaccountbasic)
     * [Query Trading Account Balance](#querytradeaccount)
     * [Feature Account Symbol Config](#symbolconfig)
-    * [Query leverage](#queryleverage)
     * [Adjust leverage](#adjustleverage)
     * [Adjust Position Mode](#adjustpositionmode)
     * [Assign Balances for Isolated Margin](#adjustmargin)
@@ -888,7 +887,7 @@ GET /api/v1/private/account/balance
 * Request
 
 ```
-GET /api/v1/private/account/symbol-config
+GET /api/v1/private/account/all-symbol-account
 ```
 
 * Example Response
@@ -910,34 +909,6 @@ GET /api/v1/private/account/symbol-config
   ]
 }
 ```
-
-<a name="queryleverage"/>
-
-### QUERY leverage
-
-* Request
-
-```  
-GET /api/v1/private/account/leverage-config  
-```
-
-Example Response
-
-```json
-{
-  "status": 0,
-  "error": "OK",
-  "data": [
-    {
-      "symbol": "atmusdt",
-      "crossLeverage": 20,
-      "isolatedLeverage": 20
-    },
-    ...
-  ]
-}  
-```  
-
 
 <a name="adjustleverage"/>
 
