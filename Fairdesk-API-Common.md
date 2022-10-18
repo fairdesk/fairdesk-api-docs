@@ -30,7 +30,7 @@
 * Fairdesk provides WebSocket API for client to receive market data, order and position updates.
 * The default Rest API base endpoint is: **https://api.fairdesk.com**.
 * The WebSocket API url is: **wss://www.fairdesk.com/**.
-* The Testnet endpoints are **https://testnet-api.fairdesk.com** and **wss://testnet.fairdesk.com**
+* The Testnet endpoints are **https://api-testnet.fairdesk.com** and **wss://testnet.fairdesk.com**
 
 <a name="restapi"/>
 
