@@ -65,16 +65,20 @@
 |------------|-----------------------------------------------------------------------------------|
 | MODE_UNI   | ONE-side-mode                                                                     |
 | MODE_HEDGE | HEDGE mode to support both long and short position of same currency and isolation |
+| MODE_EACH  | used in copy trade account only                                                   |
+
+Note: in copy trading account, we use "Each Mode", which does not auto merge positions;  "copyTradeFlag" is also required in various account query & place order requests 
 
 <a name="positionside"/>
 
 #### Position Side
 
-| type  | description                   |
-|-------|-------------------------------|
-| UNI   | ONE-side-mode                 |
-| LONG  | LONG position in hedge mode   |
-| SHORT | SHORT position in hedge mode  |
+| type  | description                  |
+|-------|------------------------------|
+| UNI   | ONE-side-mode                |
+| LONG  | LONG position in hedge mode  |
+| SHORT | SHORT position in hedge mode |
+| EACH  | used  in each position mode  |
 
 <a name="ordertype"/>
 
@@ -557,7 +561,7 @@ GET /api/v1/public/md/kline?symbol=BTCUSDT&interval=5m&from=1651382628000&to=165
 * Request
 
 ```
-GET /api/v1/private/account/current-positions
+GET /api/v1/private/account/current-positions?copyTradeFlag=true
 ```
 
 * Example Response
@@ -577,7 +581,8 @@ GET /api/v1/private/account/current-positions
       "lastTxTime": 1632190125650,
       "baseCurrency": "BTC",
       "quoteCurrency": "USDT",
-      "settleCurrency": "USDT"
+      "settleCurrency": "USDT",
+      "positionId": 1212121
     }
   ]
 }
@@ -585,15 +590,56 @@ GET /api/v1/private/account/current-positions
 
 * Response Field:
 
-| Field          | Type    | Description                                            | Possible values |
-|----------------|---------|--------------------------------------------------------|-----------------|
-| isolated       | Boolean | true for isolated position, false for crossed position | true, false     |
-| isolatedMargin | Decimal | margin used for isolated position                      |                 |
-| positionSide   | String  | Position Side                                          | LONG, SHORT     |
-| avgEntryPrice  | Decimal | averaged entry price                                   |                 |
-| quantity       | Decimal | position size                                          |                 |
-| symbol         | String  | Trading pair                                           |                 |
-| lastTxTime     | Long    | timestamp for last transaction                         |                 |
+| Field          | Type    | Description                                            | Possible values  |
+|----------------|---------|--------------------------------------------------------|------------------|
+| isolated       | Boolean | true for isolated position, false for crossed position | true, false      |
+| isolatedMargin | Decimal | margin used for isolated position                      |                  |
+| positionSide   | String  | Position Side                                          | LONG, SHORT,EACH |
+| avgEntryPrice  | Decimal | averaged entry price                                   |                  |
+| quantity       | Decimal | position size                                          |                  |
+| symbol         | String  | Trading pair                                           |                  |
+| lastTxTime     | Long    | timestamp for last transaction                         |                  |
+| positionId     | Long    | used in each mode                                      |                  |
+
+<a name="queryclosedposition"/>
+### Query Closed  Positions
+
+* Request
+
+```
+GET /api/v1/private/account/closed-positions?copyTradeFlag=true
+```
+
+* Example Response
+
+```json
+{
+  "status": 0,
+  "error": "OK",
+  "data": [
+    {
+      "symbol": "btcusdt",
+      "positionSide": "LONG",
+      "isolated": true,
+      "avgEntryPrice": "42745.50000000",
+      "avgExitPrice": "42745.50000000",
+      "leverage": "11",
+      "margin": "131.3",
+      "realizePnl": "-0.32",
+      "roi": "-0.021",
+      "totalPnl": "-0.021",
+      "quantity": "0.00100000",
+      "isolatedMargin": "2.12231500",
+      "lastTxTime": 1632190125650,
+      "baseCurrency": "BTC",
+      "quoteCurrency": "USDT",
+      "settleCurrency": "USDT",
+      "positionId": 1212121
+    }
+  ]
+}
+```
+
 
 <a name="queryopenorders"/>
 
@@ -602,7 +648,7 @@ GET /api/v1/private/account/current-positions
 * Request
 
 ```
-GET /api/v1/private/account/open-orders
+GET /api/v1/private/account/open-orders?copyTradeFlag=false
 ```  
 
 * Example Response
@@ -682,6 +728,7 @@ POST /api/v1/private/trade/place-order
   "price": "42601.5",
   "side": "BUY",
   "positionSide": "LONG",
+  "copyTradeFlag": "false",
   "isolated": true,
   "type": "LIMIT",
   "timeInForce": "GTC",
@@ -693,27 +740,30 @@ POST /api/v1/private/trade/place-order
 
 * Filed details
 
-| Field          | Type    | Required | Description                                          | Possible values          |
-|----------------|---------|----------|------------------------------------------------------|--------------------------|
-| symbol         | String  | Y        | symbol to place order                                |                          | 
-| clientOrderId  | String  | N        | client order id, max length is 40                    |                          |
-| side           | Enum    | Y        | Order direction, Buy or Sell                         | BUY, SELL                | 
-| positionSide   | Enum    | N        | position direction, UNI by default                   | LONG, SHORT, UNI         | 
-| isolated       | Boolean | Y        | true for isolated position, false for cross position | true, false              | 
-| closePosition  | Boolean | N        | indicate close position order or not                 | true, false              | 
-| quantity       | String  | Y        | Order quantity                                       |                          |
-| price          | String  | depends  | price, required for limit order                      |                          | 
-| type           | Enum    | -        | order type                                           | refer to orderType       | 
-| timeInForce    | Enum    | -        | Time in force.                                       | GTC, FOK, IOC, POST_ONLY | 
-| reduceOnly     | Boolean | N        | Useful only in one-way position mode                 | true, false              | 
-| conditional    | Boolean | -        | indicate a conditional order                         |                          | 
-| triggerType    | Enum    | -        | trigger type                                         | LAST_PRICE, Mark_PRICE   | 
-| triggerPrice   | String  | -        | Trigger Price                                        |                          |
-| tpTriggerType  | String  | -        | take profit trigger type                             | LAST_PRICE, Mark_PRICE   |
-| tpTriggerPrice | String  | -        | take profit trigger price                            |                          |
-| slTriggerType  | String  | -        | stop loss trigger type                               | LAST_PRICE, Mark_PRICE   |
-| slTriggerPrice | String  | -        | stop loss trigger price                              |                          |
-| orderRespType  | ENUM    | -        | ACK and Result required immediate ack                | ACK,RESULT,NO_ACK        |
+| Field           | Type    | Required | Description                                                 | Possible values          |
+|-----------------|---------|----------|-------------------------------------------------------------|--------------------------|
+| symbol          | String  | Y        | symbol to place order                                       |                          | 
+| copyTradeFlag   | Boolean | N        | indicate it is for copy trade(each mode), default to false, |                          | 
+| clientOrderId   | String  | N        | client order id, max length is 40                           |                          |
+| side            | Enum    | Y        | Order direction, Buy or Sell                                | BUY, SELL                | 
+| positionSide    | Enum    | N        | position direction, UNI by default                          | LONG, SHORT, UNI         | 
+| isolated        | Boolean | Y        | true for isolated position, false for cross position        | true, false              | 
+| closePosition   | Boolean | N        | indicate close position order or not                        | true, false              | 
+| quantity        | String  | Y        | Order quantity                                              |                          |
+| price           | String  | depends  | price, required for limit order                             |                          | 
+| type            | Enum    | -        | order type                                                  | refer to orderType       | 
+| timeInForce     | Enum    | -        | Time in force.                                              | GTC, FOK, IOC, POST_ONLY | 
+| reduceOnly      | Boolean | N        | Useful only in one-way position mode                        | true, false              | 
+| conditional     | Boolean | -        | indicate a conditional order                                |                          | 
+| triggerType     | Enum    | -        | trigger type                                                | LAST_PRICE, Mark_PRICE   | 
+| triggerPrice    | String  | -        | Trigger Price                                               |                          |
+| tpTriggerType   | String  | -        | take profit trigger type                                    | LAST_PRICE, Mark_PRICE   |
+| tpTriggerPrice  | String  | -        | take profit trigger price                                   |                          |
+| slTriggerType   | String  | -        | stop loss trigger type                                      | LAST_PRICE, Mark_PRICE   |
+| slTriggerPrice  | String  | -        | stop loss trigger price                                     |                          |
+| orderRespType   | ENUM    | -        | ACK and Result required immediate ack                       | ACK,RESULT,NO_ACK        |
+| leverage        | Int     | depends  | required in each mode, range 1-25                           | 20                       |
+| closePositionId | Long    | -        | required in close order in each mode                        | 1029841929               |
 
 * Example Response:
 
@@ -760,6 +810,7 @@ DELETE /api/v1/private/trade/cancel-order
 
 {
   "symbol": "btcusdt",
+  "copyTradeFlag": "false",
   "orderId": 1521325650
 }
 ```
@@ -813,6 +864,7 @@ POST /api/v1/private/trade/cancel-all-order
 {
   "symbol": null,
   "settleCcy": "USDT"
+  "copyTradeFlag": "false"
 }
 ```
 
@@ -824,7 +876,7 @@ POST /api/v1/private/trade/cancel-all-order
 * Request
 
 ```  
-GET /api/v1/private/account/account?currency=USDT  
+GET /api/v1/private/account/account?currency=USDT&copyTradeFlag=false  
 ```  
 
 * Response
@@ -849,7 +901,7 @@ GET /api/v1/private/account/account?currency=USDT
 * Request
 
 ```  
-GET /api/v1/private/account/balance  
+GET /api/v1/private/account/balance?copyTradeFlag=false  
 ```  
 
 * Response
@@ -990,6 +1042,8 @@ PUT /api/v1/private/account/config/adjust-position-margin
  "symbol": "btcusdt", "positionSide": "LONG", "changeAmount": "0.1"
 }  
 ```  
+
+note: this request has no effect for copy trade account
 
 <a name="querytrades"/>  
 
