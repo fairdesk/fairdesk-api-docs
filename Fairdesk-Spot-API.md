@@ -11,6 +11,10 @@
         * [Price Trigger Type](#pricetriggertype)
     * [Public REST API List](#restpublicapilist)
         * [product info](#queryproductinfo)
+        * [pair info](#querypair)
+        * [ticker](#queryticker)
+        * [orderbook](#queryorderbook)
+        * [trade history](#querytradehistory)
         * [Kline](#restpublickline)
     * [User REST API List](#restuserapilist)
         * [List Open Orders](#queryopenorders)
@@ -152,6 +156,154 @@ GET /api/v1/public/spot-products
 | makerFeeRate    | Decimal        | default maker fee rate            |                      |
 | takerFeeRate    | Decimal        | default taker fee rate            |                      |
   |
+
+<a name="querypair"/>
+
+#### Query Pair info
+
+* Request：
+
+```
+GET /api/v1/public/spot/pairs
+```
+
+* Example Response:
+
+```json
+
+{
+  "success": true,
+  "result": [
+    {
+      "ticker_id": "XRP_USDT",
+      "base_currency": "XRP",
+      "target_currency": "USDT",
+      "last_price": 0.407600,
+      "base_volume": 1454497.00000000,
+      "bid": 0.406000,
+      "ask": 0.407600,
+      "high": 0.413300,
+      "low": 0.398900
+    },
+   ...
+  ],
+  "error": null
+}
+
+```
+
+
+
+<a name="queryticker"/>
+
+#### Query All Tickers
+
+* Request：
+
+```
+GET /api/v1/public/spot/tickers
+```
+
+* Example Response:
+
+```json
+{
+  "success": true,
+  "result": [
+    {
+      "ticker_id": "XRP_USDT",
+      "base_currency": "XRP",
+      "target_currency": "USDT",
+      "last_price": 0.408100,
+      "base_volume": 1477301.00000000,
+      "bid": 0.406700,
+      "ask": 0.408200,
+      "high": 0.413300,
+      "low": 0.398900
+    }
+  ],
+  "error": null
+}
+
+```
+
+<a name="queryorderbook"/>
+#### Query Order book
+
+* Request：
+
+```
+GET /api/v1/public/spot/orderbook?ticker_id=BTCUSDT&depth=10
+```
+
+* Example Response:
+
+```json
+
+{
+  "success": true,
+  "result": {
+    "timestamp": 0,
+    "bids": [
+      [
+        23080.000000,
+        0.23700000
+      ],
+       ...
+    ],
+    "asks": [
+      [
+        23087.200000,
+        0.90100000
+      ],
+       ...
+    ],
+    "ticker_id": "BTCUSDT"
+  },
+  "error": null
+}
+
+```
+
+
+<a name="querytradehistory"/>
+#### Query Trade History
+
+* Request：
+
+```
+GET /api/v1/public/spot/historical-trades?ticker_id=BTC_USDT&limit=10&startTime=1674837267000
+```
+
+* Example Response:
+
+```json
+
+{
+  "success": true,
+  "result": [
+    {
+      "ticker_id": "BTC_USDT",
+      "price": 23057.100000,
+      "base_volume": 0.93100000,
+      "target_volume": 21466.16010000000000,
+      "trade_timestamp": 1674833,
+      "type": "BUY"
+    },
+    {
+      "ticker_id": "BTC_USDT",
+      "price": 23059.400000,
+      "base_volume": 1.12700000,
+      "target_volume": 25987.94380000000000,
+      "trade_timestamp": 1674833,
+      "type": "BUY"
+    }
+    ...
+  ],
+  "error": null
+}
+
+```
 
 <a name="restpublickline"/>
 
