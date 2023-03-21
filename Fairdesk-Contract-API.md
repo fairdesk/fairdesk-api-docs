@@ -763,6 +763,7 @@ POST /api/v1/private/trade/place-order
 | slTriggerPrice  | String  | -        | stop loss trigger price                                     |                          |
 | orderRespType   | ENUM    | -        | ACK and Result required immediate ack                       | ACK,RESULT,NO_ACK        |
 | leverage        | Int     | depends  | required in each mode, range 1-25                           | 20                       |
+| tagId           | Int     | -        | to identify channel (assigned by fairdesk)                  | 20                       |
 | closePositionId | Long    | -        | required in close order in each mode                        | 1029841929               |
 
 * Example Response:
@@ -1080,6 +1081,7 @@ GET /api/v1/private/account/trade-histories?symbol=ETHUSDT&orderId=1212131
         "orderId": 1522806127,
         "symbol": "btcusdt",
         "side": "SELL",
+        "tagId": 0,
         "positionSide": "LONG",
         "fee": "-0.44894800",
         "lastQty": "0.030",
@@ -1142,6 +1144,7 @@ GET /api/v1/private/account/order-histories?symbol=BTCUSDT
         "price": "4211.0",
         "timeInForce": "GTC",
         "isolated": true,
+        "tagId": 0,
         "side": "BUY",
         "positionSide": "LONG",
         "transactTime": 1632191376587,
